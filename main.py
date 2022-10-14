@@ -49,7 +49,6 @@ us = UltrasonicSensor(port = Port.S4)
 
 # Wait until center button press to move
 
-#ev3.speaker.play_file("StarWars60.wav")
 wait_for_button()
 
 run_motors(leftMotor, 180, rightMotor, 180)
@@ -77,8 +76,10 @@ dist = 110
 k = -10
 
 r = 0.03
-fast_vel = deg_to_rad(250) * r
-slow_vel = deg_to_rad(100) * r
+fast_speed = 250
+slow_speed = 100
+fast_vel = deg_to_rad(fast_speed) * r
+slow_vel = deg_to_rad(slow_speed) * r
 v = (fast_vel + slow_vel)/2
 
 stop_watch = StopWatch()
@@ -94,10 +95,10 @@ while(traveled < 2.15):
     stop_watch.resume()
 
     if (curr > 0):
-        run_motors(leftMotor, 250, rightMotor, 100)
+        run_motors(leftMotor, fast_speed, rightMotor, slow_speed)
         wait(100)
     else:
-        run_motors(leftMotor, 100, rightMotor, 250)
+        run_motors(leftMotor, slow_speed, rightMotor, fast_speed)
         wait(100)
 
 

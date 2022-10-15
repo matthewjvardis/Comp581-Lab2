@@ -61,6 +61,7 @@ stop_motors(leftMotor, rightMotor)
 
 # Turn the robot to face the right
 wait(500)
+
 run_motors(leftMotor, 80, rightMotor, -100)
 
 wait(2350)
@@ -72,14 +73,12 @@ ev3.speaker.beep()
 #wait_for_button()
 
 # Wall following
-dist = 110
+dist = 200
 k = -10
 
 r = 0.03
-fast_speed = 250
-slow_speed = 100
-fast_vel = deg_to_rad(fast_speed) * r
-slow_vel = deg_to_rad(slow_speed) * r
+fast_vel = deg_to_rad(250) * r
+slow_vel = deg_to_rad(100) * r
 v = (fast_vel + slow_vel)/2
 
 stop_watch = StopWatch()
@@ -90,16 +89,31 @@ while(traveled < 2.15):
     us_dist = us.distance()
     curr = us_dist - dist
     curr = curr * k
-   
-    stop_watch.reset()
+
+    print(curr)
+
+    if(bump.pressed()):
+        stop_watch.pause()
+        time = stop_watch.time() / 1000
+        traveled += v*time
+
+        stop_watch.reset()
+        stop_watch.resume()
+        run_motors(leftMotor, 80, rightMotor, -200)
+        wait(1500)
+        stop_watch.reset()
+
     stop_watch.resume()
 
     if (curr > 0):
-        run_motors(leftMotor, fast_speed, rightMotor, slow_speed)
-        wait(100)
+        run_motors(leftMotor, 250, rightMotor, 100)
+        wait(200)
+    #elif (curr < -600):
+        #run_motors(leftMotor, 50, rightMotor, 300)
+        #wait(200)
     else:
-        run_motors(leftMotor, slow_speed, rightMotor, fast_speed)
-        wait(100)
+        run_motors(leftMotor, 100, rightMotor, 250)
+        wait(200)
 
 
     stop_watch.pause()
@@ -107,6 +121,7 @@ while(traveled < 2.15):
     time = stop_watch.time() / 1000
     traveled += v*time
 
+    stop_watch.reset()
     stop_watch.resume()
 
 stop_motors(leftMotor, rightMotor)

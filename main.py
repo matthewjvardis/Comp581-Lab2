@@ -84,7 +84,7 @@ stop_watch = StopWatch()
 stop_watch.resume()
 traveled = 0
 
-while(traveled < 1.95):
+while(traveled < 2.08):
     us_dist = us.distance()
     print(us_dist)
 

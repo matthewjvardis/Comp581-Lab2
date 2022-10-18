@@ -59,6 +59,8 @@ while (not bump.pressed()):
 
 stop_motors(leftMotor, rightMotor)
 stop_motors(leftMotor, rightMotor)
+stop_motors(leftMotor, rightMotor)
+
 wait(500)
 
 # Turn to face the wall

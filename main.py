@@ -58,39 +58,33 @@ while (not bump.pressed()):
     pass
 
 stop_motors(leftMotor, rightMotor)
-
-# Turn the robot to face the right
+stop_motors(leftMotor, rightMotor)
 wait(500)
 
-run_motors(leftMotor, 80, rightMotor, -100)
-
-wait(2350)
+# Turn to face the wall
+run_motors(leftMotor, -50, rightMotor, -150)
+wait(3200)
 
 stop_motors(leftMotor, rightMotor)
 stop_motors(leftMotor, rightMotor)
 ev3.speaker.beep()
 
-#wait_for_button()
 
 # Wall following
-dist = 200
-k = -10
+dist = 225
 
+v = 0
+fast_vel = 0
+slow_vel = 0
 r = 0.03
-fast_vel = deg_to_rad(250) * r
-slow_vel = deg_to_rad(100) * r
-v = (fast_vel + slow_vel)/2
 
 stop_watch = StopWatch()
 stop_watch.resume()
 traveled = 0
 
-while(traveled < 2.15):
+while(traveled < 1.95):
     us_dist = us.distance()
-    curr = us_dist - dist
-    curr = curr * k
-
-    print(curr)
+    print(us_dist)
 
     if(bump.pressed()):
         stop_watch.pause()
@@ -101,21 +95,28 @@ while(traveled < 2.15):
         stop_watch.resume()
         run_motors(leftMotor, 80, rightMotor, -200)
         wait(1500)
-        stop_watch.reset()
+
+        fast_vel = deg_to_rad(-200)
+        slow_vel = deg_to_rad(80)
 
     stop_watch.resume()
 
-    if (curr > 0):
-        run_motors(leftMotor, 250, rightMotor, 100)
-        wait(200)
-    #elif (curr < -600):
-        #run_motors(leftMotor, 50, rightMotor, 300)
-        #wait(200)
+    if (us_dist > dist):
+        run_motors(leftMotor, 120, rightMotor, 180)
+        fast_vel = deg_to_rad(180) * r
+        slow_vel = deg_to_rad(120) * r
+    elif (us_dist == dist):
+        run_motors(leftMotor, 150, rightMotor, 150)
+        fast_vel = deg_to_rad(150) * r
+        slow_vel = deg_to_rad(150) * r
     else:
-        run_motors(leftMotor, 100, rightMotor, 250)
-        wait(200)
+        run_motors(leftMotor, 180, rightMotor, 120)
+        fast_vel = deg_to_rad(180) * r
+        slow_vel = deg_to_rad(120) * r
 
-
+    v = (fast_vel + slow_vel)/2
+    wait(50)
+    
     stop_watch.pause()
 
     time = stop_watch.time() / 1000
@@ -126,5 +127,7 @@ while(traveled < 2.15):
 
 stop_motors(leftMotor, rightMotor)
 stop_motors(leftMotor, rightMotor)
+wait(10)
+stop_motors(leftMotor, rightMotor)
 
-ev3.speaker.play_file("surprise.wav")
+play_music(ev3)
